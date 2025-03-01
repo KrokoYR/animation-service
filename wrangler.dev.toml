@@ -1,0 +1,42 @@
+name = "animation-streaming-service"
+main = "src/index.ts"
+compatibility_date = "2023-12-01"
+
+[vars]
+ENVIRONMENT = "development"
+AUTH_ENABLED = "false"
+API_KEY_HEADER = "X-API-Key"
+JWT_SECRET = "your-jwt-secret-change-in-production"
+
+[[durable_objects.bindings]]
+name = "SESSION_DO"
+class_name = "SessionDO"
+
+[[kv_namespaces]]
+binding = "ANIMATION_LOGS"
+id = "49774ac6f9d845818558579f1d66b5a8"
+preview_id = "740a794e8044489caa39d5c6004133da"
+
+[[kv_namespaces]]
+binding = "ANIMATION_HISTORY"
+id = "8605b3e34ed146ebb40a76a061ead12a"
+preview_id = "cafca0828d4f4c6bbb5809cb452f5e12"
+
+[[migrations]]
+tag = "v1"
+new_classes = ["SessionDO"]
+
+[[routes]]
+pattern = "ws.animationservicetesttest.org/*"
+zone_id = "b0c4782a5f96ff36756e4411a0061f6b"
+
+[[routes]]
+pattern = "api.animationservicetesttest.org/*"
+zone_id = "b0c4782a5f96ff36756e4411a0061f6b"
+
+# Deploy to custom routes
+# [env.production]
+# routes = [
+#     { pattern = "api.animationservicetesttest.org/*", zone_id = "b0c4782a5f96ff36756e4411a0061f6b" },
+#     { pattern = "ws.animationservicetesttest.org/*", zone_id = "b0c4782a5f96ff36756e4411a0061f6b" },
+# ]

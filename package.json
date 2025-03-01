@@ -1,0 +1,39 @@
+{
+	"name": "animation-service",
+	"version": "1.0.0",
+	"description": "Real-time animation streaming service with WebSockets and REST API",
+	"main": "dist/index.js",
+	"scripts": {
+		"format": "prettier --write '**/*.{js,ts,css,json,md}'",
+		"dev": "wrangler dev src/index.ts",
+		"test": "jest",
+		"deploy-dev": "wrangler deploy src/index.ts --config wrangler.dev.toml",
+		"deploy-prod": "wrangler deploy src/index.ts --config wrangler.prod.toml",
+		"reset": "node scripts/reset-local-state.js",
+		"itest": "node scripts/animation-test.mjs > logs/test-results.log",
+		"itest:prod": "ANIMATION_ENV=prod PROD_API_URL=https://animation-streaming-service.balzhinimaev1997.workers.dev PROD_API_KEY=your-production-api-key node scripts/animation-test.mjs > logs/test-results-prod.log",
+		"generate-docs": "swagger-cli bundle src/api/swagger/swagger.yaml -o swagger.json"
+	},
+	"author": "",
+	"license": "MIT",
+	"dependencies": {
+		"deepmerge": "^4.3.1",
+		"itty-router": "5.0.18",
+		"jose": "6.0.8",
+		"node-fetch": "^3.3.2",
+		"swagger-ui-dist": "^5.10.0",
+		"uuid": "11.1.0",
+		"zod": "3.24.2"
+	},
+	"devDependencies": {
+		"@cloudflare/workers-types": "4.20250224.0",
+		"@types/jest": "29.5.14",
+		"@types/node": "^20.10.5",
+		"jest": "29.7.0",
+		"prettier": "3.5.2",
+		"ts-jest": "29.2.6",
+		"ts-loader": "9.5.2",
+		"typescript": "5.7.3",
+		"wrangler": "3.111.0"
+	}
+}

@@ -1,0 +1,40 @@
+name = "animation-streaming-service-prod"
+main = "src/index.ts"
+compatibility_date = "2025-03-01"
+
+# Production environment variables
+[vars]
+ENVIRONMENT = "production"
+AUTH_ENABLED = "false"
+API_KEY_HEADER = "X-API-Key"
+JWT_SECRET = "replace-with-secure-production-key"
+
+# Durable Objects binding for session state management
+[[durable_objects.bindings]]
+name = "SESSION_DO"
+class_name = "SessionDO"
+
+# KV Namespace bindings for logs and history
+[[kv_namespaces]]
+binding = "ANIMATION_LOGS"
+id = "your-prod-kv-namespace-id-for-logs"
+preview_id = "your-prod-preview-kv-namespace-id-for-logs"
+
+[[kv_namespaces]]
+binding = "ANIMATION_HISTORY"
+id = "your-prod-kv-namespace-id-for-history"
+preview_id = "your-prod-preview-kv-namespace-id-for-history"
+
+# Define Durable Object migrations
+[[migrations]]
+tag = "v1"
+new_classes = ["SessionDO"]
+
+# Production routes
+[[routes]]
+pattern = "api.yourdomain.com/*"
+zone_id = "your-zone-id"
+
+[[routes]]
+pattern = "ws.yourdomain.com/*"
+zone_id = "your-zone-id"
