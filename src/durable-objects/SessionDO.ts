@@ -113,14 +113,9 @@ export class SessionDO implements DurableObject {
 
       switch (path[0]) {
         case "info":
-          this.session.updatedAt = Date.now();
-          await this.saveSessionData();
           return this.jsonResponse(this.session);
 
         case "state":
-          // Return full session state
-          this.session.updatedAt = Date.now();
-          await this.saveSessionData();
           return this.jsonResponse(await this.getSessionState());
 
         case "characters":
@@ -205,29 +200,35 @@ export class SessionDO implements DurableObject {
   }
 
   private async handleStatusRequest(request: Request): Promise<Response> {
-    if (request.method !== "POST") {
-      return new Response("Method not allowed", { status: 405 });
+    switch (request.method) {
+      case "POST": {
+        const data = (await request.json()) as { status: SessionStatus };
+
+        if (
+          !data.status ||
+          !Object.values(SessionStatus).includes(data.status)
+        ) {
+          return new Response("Invalid status", { status: 400 });
+        }
+
+        this.session.updateStatus(data.status);
+        await this.saveSessionData();
+
+        this.broadcastMessage({
+          type: WebSocketMessageType.SESSION_STATUS,
+          sessionId: this.session.id,
+          payload: {
+            status: this.session.status,
+          },
+          timestamp: Date.now(),
+        });
+
+        return this.jsonResponse({ status: this.session.status });
+      }
+      default: {
+        return new Response("Method not allowed", { status: 405 });
+      }
     }
-
-    const data = (await request.json()) as { status: SessionStatus };
-
-    if (!data.status || !Object.values(SessionStatus).includes(data.status)) {
-      return new Response("Invalid status", { status: 400 });
-    }
-
-    this.session.updateStatus(data.status);
-    await this.saveSessionData();
-
-    this.broadcastMessage({
-      type: WebSocketMessageType.SESSION_STATUS,
-      sessionId: this.session.id,
-      payload: {
-        status: this.session.status,
-      },
-      timestamp: Date.now(),
-    });
-
-    return this.jsonResponse({ status: this.session.status });
   }
 
   private async handleMetadataRequest(request: Request): Promise<Response> {
@@ -483,7 +484,7 @@ export class SessionDO implements DurableObject {
   }
 
   private async handleAnimationCommand(
-    clientId: string,
+    _clientId: string,
     command: AnimationCommand
   ): Promise<void> {
     if (!command.characterId || !command.action) {
