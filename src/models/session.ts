@@ -28,11 +28,6 @@ export class SessionModel implements Session {
     this.metadata = metadata;
   }
 
-  static fromJSON(json: string): SessionModel {
-    const data = JSON.parse(json);
-    return new SessionModel(data);
-  }
-
   addCharacter(character: Character): void {
     this.activeCharacters.push(character);
     this.updatedAt = Date.now();

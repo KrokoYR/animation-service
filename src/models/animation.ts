@@ -22,19 +22,6 @@ export class AnimationCommandModel implements AnimationCommand {
     this.duration = duration;
     this.timestamp = Date.now();
   }
-
-  static fromJSON(json: string): AnimationCommandModel {
-    const data = JSON.parse(json);
-    const command = new AnimationCommandModel(
-      data.characterId,
-      data.action,
-      data.params,
-      data.duration
-    );
-    command.id = data.id;
-    command.timestamp = data.timestamp;
-    return command;
-  }
 }
 
 export class LogEntryModel implements LogEntry {
@@ -57,18 +44,5 @@ export class LogEntryModel implements LogEntry {
     this.message = message;
     this.timestamp = Date.now();
     this.metadata = metadata;
-  }
-
-  static fromJSON(json: string): LogEntryModel {
-    const data = JSON.parse(json);
-    const log = new LogEntryModel(
-      data.sessionId,
-      data.type,
-      data.message,
-      data.metadata
-    );
-    log.id = data.id;
-    log.timestamp = data.timestamp;
-    return log;
   }
 }
